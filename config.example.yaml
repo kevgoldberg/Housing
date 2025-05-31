@@ -1,0 +1,11 @@
+# Example configuration file for experiment settings
+# Copy to config.yaml and edit as needed
+
+# Data paths
+raw_data_path: data/raw/train.csv
+processed_data_path: data/processed/train_clean.csv
+
+# Model parameters
+model_type: RandomForestRegressor
+n_estimators: 100
+random_state: 42

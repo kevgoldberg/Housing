@@ -1,0 +1,92 @@
+# Correlation Analysis Configuration
+# Settings for housing data correlation analysis
+
+# Data paths
+data:
+  train_path: "data/processed/V1/train_cleaned.csv"
+  test_path: "data/processed/V1/test_cleaned.csv" # if available
+  output_dir: "notebooks/correlation_analysis_results"
+
+# Analysis settings
+analysis:
+  target_variable: "SalePrice"
+  correlation_threshold: 0.7  # Threshold for flagging high correlations
+  vif_threshold: 5.0          # Threshold for multicollinearity detection
+  
+  # Methods for correlation analysis
+  correlation_methods:
+    - "pearson"
+    - "spearman"
+  
+  # Feature importance methods
+  importance_methods:
+    - "correlation"
+    - "mutual_info"
+
+# Visualization settings
+visualization:
+  save_plots: true
+  plots_dir: "notebooks/correlation_analysis_plots"
+  figure_format: "png"
+  figure_dpi: 300
+  figure_size: [12, 8]
+  
+  # Color schemes
+  correlation_colormap: "RdBu_r"
+  categorical_colors: ["blue", "orange", "green", "red", "purple"]
+
+# Reporting settings
+reporting:
+  max_high_correlations_display: 20
+  max_categorical_associations_display: 15
+  max_features_importance_display: 20
+  
+  # Interpretation thresholds
+  thresholds:
+    correlation:
+      very_weak: 0.3
+      weak: 0.5
+      moderate: 0.7
+      strong: 0.9
+    
+    cramers_v:
+      weak: 0.1
+      moderate: 0.3
+      strong: 0.5
+    
+    eta_squared:
+      small: 0.01
+      medium: 0.06
+      large: 0.14
+    
+    vif:
+      low: 5.0
+      moderate: 10.0
+
+# Feature selection settings
+feature_selection:
+  exclude_id_columns: true
+  exclude_columns: []  # Specific columns to exclude
+  
+  # Minimum requirements
+  min_correlation_for_importance: 0.1
+  min_variance_threshold: 0.0
+  
+  # Categorical variable handling
+  max_categories_for_cramers_v: 50
+  min_category_frequency: 5
+
+# Advanced analysis settings
+advanced:
+  # Mutual information settings
+  mutual_info:
+    random_state: 42
+    n_neighbors: 3
+  
+  # Statistical test settings
+  statistical_tests:
+    alpha: 0.05  # Significance level
+    
+  # Memory optimization
+  chunk_size: 1000  # For large datasets
+  use_sparse_matrices: false
