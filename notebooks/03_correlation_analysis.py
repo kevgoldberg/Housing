@@ -1,4 +1,4 @@
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # # Housing Data Correlation Analysis
 # 
 # **Comprehensive correlation and association analysis before model development**
@@ -27,9 +27,10 @@
 # 
 # ---
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 1. Data Loading and Setup
 
+# %%
 # Import required libraries
 import sys
 import os
@@ -59,6 +60,7 @@ plt.rcParams['font.size'] = 10
 print("Setup completed successfully!")
 print(f"Project root: {project_root}")
 
+# %%
 # Load the cleaned housing data
 data_path = project_root / 'data' / 'processed' / 'V1' / 'train_cleaned.csv'
 
@@ -69,9 +71,10 @@ print(f"Data loaded successfully!")
 print(f"Shape: {df.shape}")
 print(f"Memory usage: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 2. Exploratory Data Overview
 
+# %%
 # Basic data information
 print("=== DATASET OVERVIEW ===")
 print(f"Shape: {df.shape}")
@@ -86,6 +89,7 @@ if len(missing_summary) > 0:
 else:
     print("No missing values found!")
 
+# %%
 # Identify numeric and categorical variables
 numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
 categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
@@ -99,11 +103,13 @@ print(f"Categorical variables ({len(categorical_cols)}): {categorical_cols[:10]}
 if id_cols:
     print(f"ID columns excluded: {id_cols}")
 
+# %%
 # Quick statistical summary for numeric variables
 print("=== NUMERIC VARIABLES SUMMARY ===")
 numeric_summary = df[numeric_cols].describe()
 print(numeric_summary.round(2))
 
+# %%
 # Target variable analysis (assuming SalePrice is the target)
 target_var = 'SalePrice' if 'SalePrice' in df.columns else None
 
@@ -140,18 +146,21 @@ if target_var:
 else:
     print("No target variable identified. Please specify target variable for focused analysis.")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 3. Correlation Matrix Analysis
 
+# %%
 # Initialize the correlation analyzer
 analyzer = HousingCorrelationAnalyzer(df)
 
 print("Correlation analyzer initialized successfully!")
 
+# %%
 # Generate correlation matrix
 print("Generating correlation matrix...")
 correlation_matrix = analyzer.correlation_matrix_analysis(method='pearson', figsize=(16, 14))
 
+# %%
 # Show correlation matrix statistics
 if not correlation_matrix.empty:
     print("=== CORRELATION MATRIX STATISTICS ===")
@@ -177,9 +186,10 @@ if not correlation_matrix.empty:
     print(f"Strong (0.7-0.9): {((abs_corr >= 0.7) & (abs_corr < 0.9)).sum()} ({((abs_corr >= 0.7) & (abs_corr < 0.9)).mean()*100:.1f}%)")
     print(f"Very strong (≥ 0.9): {(abs_corr >= 0.9).sum()} ({(abs_corr >= 0.9).mean()*100:.1f}%)")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 4. High Correlation Detection
 
+# %%
 # Find high correlations
 print("Analyzing high correlations...")
 high_correlations = analyzer.find_high_correlations(threshold=0.7, target_var=target_var)
@@ -212,6 +222,7 @@ if not high_correlations.empty:
 else:
     print("No high correlations found with threshold 0.7")
 
+# %%
 # Try lower threshold if no high correlations found
 if high_correlations.empty:
     print("Trying lower threshold (0.5)...")
@@ -224,9 +235,10 @@ if high_correlations.empty:
     else:
         print("No correlations found even with threshold 0.5")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 5. Multicollinearity Analysis
 
+# %%
 # Check for multicollinearity using VIF
 print("Analyzing multicollinearity (VIF)...")
 vif_results = analyzer.multicollinearity_analysis(threshold=5.0)
@@ -267,9 +279,10 @@ if not vif_results.empty:
 else:
     print("VIF analysis could not be performed (insufficient data or statsmodels not available)")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 6. Categorical Variable Associations
 
+# %%
 # Analyze categorical variable associations
 if len(categorical_cols) > 1:
     print("Analyzing categorical variable associations...")
@@ -313,9 +326,10 @@ if len(categorical_cols) > 1:
 else:
     print("Insufficient categorical variables for association analysis")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 7. Mixed Variable Analysis
 
+# %%
 # Analyze relationships between categorical and numeric variables
 if target_var and len(categorical_cols) > 0:
     print("Analyzing categorical vs numeric relationships...")
@@ -369,9 +383,10 @@ if target_var and len(categorical_cols) > 0:
 else:
     print("Mixed variable analysis skipped (no target variable or categorical variables)")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 8. Feature Importance Analysis
 
+# %%
 # Feature importance analysis
 if target_var:
     print("Analyzing feature importance...")
@@ -426,9 +441,10 @@ if target_var:
 else:
     print("Feature importance analysis skipped (no target variable specified)")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 9. Comprehensive Report
 
+# %%
 # Generate comprehensive report
 print("Generating comprehensive correlation analysis report...")
 
@@ -447,9 +463,10 @@ report_results = analyzer.generate_comprehensive_report(
 
 print(f"\nPlots saved to: {plots_dir}")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## 10. Modeling Recommendations
 
+# %%
 # Extract and display detailed modeling recommendations
 print("=" * 60)
 print("DETAILED MODELING RECOMMENDATIONS")
@@ -588,7 +605,7 @@ print("\n" + "=" * 60)
 print("ANALYSIS COMPLETE - READY FOR MODELING")
 print("=" * 60)
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Summary
 # 
 # This comprehensive correlation analysis has provided insights into:
@@ -607,4 +624,3 @@ print("=" * 60)
 # - Consider target variable transformations if needed
 # 
 # The analysis results and plots have been saved for reference during model development.
-

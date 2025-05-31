@@ -1,7 +1,8 @@
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # # Advanced Data Cleaning and Imputation
 # This notebook demonstrates advanced methods for handling missing values and outliers in the housing dataset, including structural filling, ordinal encoding, iterative imputation, and predictive imputation techniques.
 
+# %%
 # Import required libraries
 import os
 import pandas as pd
@@ -14,22 +15,25 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, OrdinalEncoder
 from sklearn.metrics import mean_squared_error
 
+# %%
 # Load the training data
 train_df = pd.read_csv('../../data/raw/train.csv')
 train_df.head()
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Inspect Missing Values
 # Check for missing values in the dataset to identify columns that need advanced imputation.
 
+# %%
 # Display missing value counts
 missing = train_df.isnull().sum()
 missing[missing > 0].sort_values(ascending=False)
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Handling Structural Missing Values
 # Some features have missing values that indicate the absence of a feature (e.g., no garage, no alley access). These should be filled with a specific value like 'None' before advanced imputation.
 
+# %%
 # Fill structural missing values with 'None' for relevant categorical features
 structural_none_features = ['Alley', 'GarageType', 'GarageFinish', 'GarageQual', 'GarageCond',
                             'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2',
@@ -38,6 +42,7 @@ for col in structural_none_features:
     if col in train_df.columns:
         train_df[col] = train_df[col].fillna('None')
 
+# %%
 # Predictive imputation for a categorical column (e.g., GarageType)
 feature = 'GarageType'
 if train_df[feature].isnull().sum() > 0:
@@ -51,11 +56,11 @@ if train_df[feature].isnull().sum() > 0:
     clf.fit(X, not_null[feature])
     train_df.loc[train_df[feature].isnull(), feature] = clf.predict(X_null)
 
-
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Define Ordinal Features and Quality Mapping
 # Some features have a natural order (e.g., quality ratings). We'll define these before feature grouping to handle them appropriately.
 
+# %%
 # Define quality-related features and their order
 quality_map = ['None', 'Po', 'Fa', 'TA', 'Gd', 'Ex']
 ordinal_features = [
@@ -66,10 +71,11 @@ ordinal_features = [
 ordinal_features = [col for col in ordinal_features if col in train_df.columns]
 print(f"Ordinal features found: {ordinal_features}")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Feature Grouping for Preprocessing
 # Split features into numeric, ordinal, and categorical groups for separate preprocessing pipelines.
 
+# %%
 # Identify numeric and categorical columns (excluding target and ordinal features)
 numeric_features = train_df.select_dtypes(include=[np.number]).columns.drop('SalePrice', errors='ignore')
 categorical_features = [col for col in train_df.select_dtypes(include='object').columns 
@@ -78,13 +84,14 @@ print(f"Numeric features: {len(numeric_features)}")
 print(f"Ordinal features: {len(ordinal_features)}")
 print(f"Categorical features: {len(categorical_features)}")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Build Comprehensive Preprocessing Pipeline
 # Use scikit-learn's ColumnTransformer to apply different preprocessing strategies:
 # - **Numeric**: Iterative imputation + scaling
 # - **Ordinal**: Constant imputation + ordinal encoding
 # - **Categorical**: Constant imputation + one-hot encoding
 
+# %%
 # Define preprocessing pipelines for each feature type
 numeric_pipeline = Pipeline([
     ('imputer', IterativeImputer(
@@ -110,14 +117,15 @@ preprocessor = ColumnTransformer([
 X_clean = preprocessor.fit_transform(train_df.drop(columns='SalePrice'))
 print(f"Preprocessed data shape: {X_clean.shape}")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Advanced Predictive Imputation for Categorical Features
 # Use predictive modeling to fill missing categorical values (example for GarageType).
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # # Convert Preprocessed Data to DataFrame with Numeric Features
 # After preprocessing, the output is a NumPy array. To make it easier to work with, convert it back to a DataFrame with proper column names.
 
+# %%
 # Convert preprocessed data to DataFrame with feature names
 # Get feature names for each transformer
 num_cols = list(numeric_features)
@@ -135,12 +143,12 @@ X_clean_df = pd.DataFrame(X_clean_dense, columns=all_cols, index=train_df.index)
 print(X_clean_df.head())
 print(f"All features are now numeric. Shape: {X_clean_df.shape}")
 
-# --------------------------------------------------------------------------------
+# %% [markdown]
 # ## Save Cleaned Dataset
 # Export the cleaned dataset for further analysis or modeling.
 
+# %%
 # Save cleaned numeric data
 os.makedirs('../../data/processed/V2', exist_ok=True)
 X_clean_df.to_csv('../../data/processed/V2/train_advanced_cleaned.csv', index=False)
 print(f"Cleaned numeric dataset saved with shape: {X_clean_df.shape}")
-
