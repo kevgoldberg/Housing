@@ -32,3 +32,13 @@ python scripts/preprocess_data.py \
   --input data/raw/train.csv \
   --output data/processed/V2/train_preprocessed.csv
 ```
+
+Use the `--analyze` flag to display a quick summary of the dataset before
+running the preprocessing routine:
+
+```bash
+python scripts/preprocess_data.py \
+  --analyze \
+  --input data/raw/train.csv \
+  --output data/processed/V1/train_cleaned.csv
+```
