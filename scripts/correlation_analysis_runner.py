@@ -16,8 +16,10 @@ Date: May 31, 2025
 
 import argparse
 import sys
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+import yaml
 
 # Add src directory to path
 project_root = Path(__file__).parent.parent
@@ -25,25 +27,59 @@ sys.path.append(str(project_root / 'src'))
 
 from correlation_analyzer import HousingCorrelationAnalyzer
 
+
+def load_config(path: Path) -> dict:
+    """Load YAML configuration file."""
+    try:
+        with path.open("r") as f:
+            return yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        print(f"Config file not found: {path}")
+        return {}
+
 def main():
     parser = argparse.ArgumentParser(description='Run correlation analysis on housing data')
-    parser.add_argument('--data', type=str, required=True,
+    parser.add_argument('--config', type=str, default=None,
+                        help='Optional YAML configuration file')
+    parser.add_argument('--data', type=str, required=False,
                        help='Path to the housing data CSV file')
-    parser.add_argument('--target', type=str, default='SalePrice',
-                       help='Target variable name (default: SalePrice)')
-    parser.add_argument('--threshold', type=float, default=0.7,
-                       help='Correlation threshold for flagging high correlations (default: 0.7)')
-    parser.add_argument('--vif-threshold', type=float, default=5.0,
-                       help='VIF threshold for multicollinearity detection (default: 5.0)')
+    parser.add_argument('--target', type=str, default=None,
+                        help='Target variable name')
+    parser.add_argument('--threshold', type=float, default=None,
+                        help='Correlation threshold for flagging high correlations')
+    parser.add_argument('--vif-threshold', type=float, default=None,
+                        help='VIF threshold for multicollinearity detection')
     parser.add_argument('--save-plots', action='store_true',
-                       help='Save correlation plots to files')
-    parser.add_argument('--plots-dir', type=str, default='correlation_plots',
-                       help='Directory to save plots (default: correlation_plots)')
+                        help='Save correlation plots to files')
+    parser.add_argument('--plots-dir', type=str, default=None,
+                        help='Directory to save plots')
     parser.add_argument('--quick', action='store_true',
                        help='Run quick analysis (correlation matrix and high correlations only)')
     
     args = parser.parse_args()
-    
+
+    # Load configuration if provided
+    config = {}
+    if args.config:
+        config = load_config(Path(args.config))
+
+    # Apply config defaults
+    if args.data is None:
+        args.data = config.get('data', {}).get('train_path')
+    if args.target is None:
+        args.target = config.get('analysis', {}).get('target_variable', 'SalePrice')
+    if args.threshold is None:
+        args.threshold = config.get('analysis', {}).get('correlation_threshold', 0.7)
+    if args.vif_threshold is None:
+        args.vif_threshold = config.get('analysis', {}).get('vif_threshold', 5.0)
+    if not args.save_plots:
+        args.save_plots = config.get('visualization', {}).get('save_plots', False)
+    if args.plots_dir is None:
+        args.plots_dir = config.get('visualization', {}).get('plots_dir', 'correlation_plots')
+
+    if not args.data:
+        parser.error('Data path must be provided via --data or config file.')
+
     # Load data
     try:
         print(f"Loading data from: {args.data}")
