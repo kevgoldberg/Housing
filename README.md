@@ -22,3 +22,13 @@ python scripts/preprocess_data.py \
   --input data/raw/train.csv \
   --output data/processed/V1/train_cleaned.csv
 ```
+
+For a more feature-rich preprocessing pipeline that performs scaling and
+one-hot encoding, add `--method advanced`:
+
+```bash
+python scripts/preprocess_data.py \
+  --method advanced \
+  --input data/raw/train.csv \
+  --output data/processed/V2/train_preprocessed.csv
+```
