@@ -42,3 +42,25 @@ python scripts/preprocess_data.py \
   --input data/raw/train.csv \
   --output data/processed/V1/train_cleaned.csv
 ```
+
+## Correlation Analysis
+
+Use the correlation analysis runner to explore relationships between variables.
+The script can optionally save a JSON report of the results:
+
+```bash
+python scripts/correlation_analysis_runner.py \
+  --data data/processed/V1/train_cleaned.csv \
+  --target SalePrice \
+  --output-report analysis_report.json
+```
+
+Add `--quick` to perform only a correlation matrix and high-correlation search.
+
+## Running Tests
+
+Run the unit tests with `pytest`:
+
+```bash
+pytest -q
+```

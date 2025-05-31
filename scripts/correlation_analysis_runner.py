@@ -55,6 +55,8 @@ def main():
                         help='Directory to save plots')
     parser.add_argument('--quick', action='store_true',
                        help='Run quick analysis (correlation matrix and high correlations only)')
+    parser.add_argument('--output-report', type=str, default=None,
+                        help='Optional path to save analysis results as JSON')
     
     args = parser.parse_args()
 
@@ -76,6 +78,8 @@ def main():
         args.save_plots = config.get('visualization', {}).get('save_plots', False)
     if args.plots_dir is None:
         args.plots_dir = config.get('visualization', {}).get('plots_dir', 'correlation_plots')
+    if args.output_report is None:
+        args.output_report = config.get('reporting', {}).get('output_report')
 
     if not args.data:
         parser.error('Data path must be provided via --data or config file.')
@@ -108,7 +112,7 @@ def main():
         
         # Correlation matrix
         corr_matrix = analyzer.correlation_matrix_analysis()
-        
+
         # High correlations
         high_corr = analyzer.find_high_correlations(threshold=args.threshold, target_var=target_var)
         if not high_corr.empty:
@@ -116,7 +120,13 @@ def main():
             print(high_corr.to_string(index=False))
         else:
             print(f"\nNo high correlations found with threshold {args.threshold}")
-        
+
+        if args.output_report:
+            analyzer.save_report({
+                'correlation_matrix': corr_matrix,
+                'high_correlations': high_corr
+            }, args.output_report)
+
     else:
         # Full analysis
         results = analyzer.generate_comprehensive_report(
@@ -124,7 +134,8 @@ def main():
             correlation_threshold=args.threshold,
             vif_threshold=args.vif_threshold,
             save_plots=args.save_plots,
-            plots_dir=args.plots_dir
+            plots_dir=args.plots_dir,
+            output_path=args.output_report
         )
         
         if args.save_plots:

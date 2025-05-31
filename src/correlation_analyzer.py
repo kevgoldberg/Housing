@@ -17,6 +17,8 @@ from scipy.stats import chi2_contingency
 import warnings
 from typing import Optional, List, Dict, Tuple, Union
 import itertools
+import json
+from pathlib import Path
 
 warnings.filterwarnings('ignore')
 
@@ -410,12 +412,13 @@ class HousingCorrelationAnalyzer:
         
         return importance_df
     
-    def generate_comprehensive_report(self, 
+    def generate_comprehensive_report(self,
                                     target_var: Optional[str] = None,
                                     correlation_threshold: float = 0.7,
                                     vif_threshold: float = 5.0,
                                     save_plots: bool = False,
-                                    plots_dir: str = "plots") -> Dict:
+                                    plots_dir: str = "plots",
+                                    output_path: Optional[str] = None) -> Dict:
         """
         Generate a comprehensive correlation analysis report.
         
@@ -425,6 +428,7 @@ class HousingCorrelationAnalyzer:
             vif_threshold (float): Threshold for flagging high VIF
             save_plots (bool): Whether to save plots to files
             plots_dir (str): Directory to save plots
+            output_path (Optional[str]): Optional path to save the report as JSON
             
         Returns:
             Dict: Dictionary containing all analysis results
@@ -581,11 +585,14 @@ class HousingCorrelationAnalyzer:
             print(rec)
         
         results['recommendations'] = recommendations
-        
+
         print(f"\n{'='*60}")
         print("ANALYSIS COMPLETE")
         print(f"{'='*60}")
-        
+
+        if output_path:
+            self.save_report(results, output_path)
+
         return results
     
     @staticmethod
@@ -613,3 +620,21 @@ class HousingCorrelationAnalyzer:
             return "Moderate multicollinearity"
         else:
             return "High multicollinearity"
+
+    @staticmethod
+    def save_report(results: Dict, path: Union[str, Path]) -> None:
+        """Save analysis results to a JSON file."""
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        def _convert(obj):
+            if isinstance(obj, pd.DataFrame):
+                return obj.to_dict(orient="list")
+            if isinstance(obj, pd.Series):
+                return obj.to_dict()
+            return obj
+
+        serializable = {k: _convert(v) for k, v in results.items()}
+        with path.open("w") as f:
+            json.dump(serializable, f, indent=2)
+        print(f"Report saved to {path}")
