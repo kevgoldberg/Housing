@@ -32,3 +32,13 @@ python scripts/preprocess_data.py \
   --input data/raw/train.csv \
   --output data/processed/V2/train_preprocessed.csv
 ```
+
+## Model Benchmarking
+
+Use the benchmarking script to train a few standard scikit-learn models and compare their performance. The script reports RMSE, MAE and R² on a hold-out test split.
+
+```bash
+python scripts/benchmark_models.py --data data/processed/V2/train_advanced_cleaned.csv
+```
+
+Pass `--output results.csv` to save the table of results.
