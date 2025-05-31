@@ -10,6 +10,7 @@ project_root = script_dir.parent
 sys.path.append(str(project_root / "src"))
 
 from data_cleaner import simple_preprocess, advanced_preprocess
+from data_analyzer import summarize_csv
 
 
 def main() -> None:
@@ -32,10 +33,23 @@ def main() -> None:
         default="simple",
         help="Preprocessing strategy to use (simple or advanced)",
     )
+    parser.add_argument(
+        "--analyze",
+        action="store_true",
+        help="Display a summary of the dataset before preprocessing",
+    )
 
     args = parser.parse_args()
 
     print(f"Loading data from {args.input}")
+
+    if args.analyze:
+        try:
+            summary = summarize_csv(args.input)
+            print("\nDataset summary:\n" + summary.to_string(index=False))
+        except Exception as exc:
+            print(f"Failed to analyze dataset: {exc}")
+
     if args.method == "advanced":
         df = advanced_preprocess(args.input, args.output)
     else:
