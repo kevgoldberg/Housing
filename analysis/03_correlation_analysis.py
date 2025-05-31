@@ -16,7 +16,7 @@ project_root = Path().resolve().parent
 sys.path.append(str(project_root / 'src'))
 
 # Import custom correlation analyzer
-from correlation_analyzer import HousingCorrelationAnalyzer
+from analysis.correlation_analyzer import HousingCorrelationAnalyzer
 
 # Set visualization style
 plt.style.use('default')

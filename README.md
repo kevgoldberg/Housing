@@ -5,6 +5,8 @@
 - `data/processed/` - For cleaned/engineered data
 - `analysis/` - Python analysis scripts
 - `scripts/` - Python scripts for data processing and modeling
+- `src/data/` - Data loading and preprocessing utilities
+- `src/analysis/` - Reusable analysis modules
 - `scripts/run_pipeline.py` - Simple pipeline to clean data and create visualizations
 - `tests/` - Unit tests
 
