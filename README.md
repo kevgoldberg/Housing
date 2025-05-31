@@ -42,3 +42,14 @@ python scripts/preprocess_data.py \
   --input data/raw/train.csv \
   --output data/processed/V1/train_cleaned.csv
 ```
+
+## Model Comparison
+
+Use the `compare_models.py` script to evaluate several algorithms with cross-validation and see which performs best. It requires a preprocessed dataset (e.g., from the advanced preprocessing method):
+
+```bash
+python scripts/compare_models.py \
+  --data data/processed/V2/train_advanced_cleaned.csv
+```
+
+The script outputs a table with RMSE, MAE, and R² scores so you can quickly identify the top-performing model.
