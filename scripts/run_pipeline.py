@@ -8,7 +8,7 @@ import sys
 project_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(project_root / "src"))
 
-from data_pipeline import load_data, clean_data, save_data, create_visualizations
+from data.pipeline import load_data, clean_data, save_data, create_visualizations
 
 
 def main() -> int:

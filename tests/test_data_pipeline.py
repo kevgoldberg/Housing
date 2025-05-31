@@ -1,5 +1,5 @@
 import pandas as pd
-from data_pipeline import load_data, clean_data, save_data, create_visualizations
+from data.pipeline import load_data, clean_data, save_data, create_visualizations
 
 
 def test_clean_data_removes_na(tmp_path):

@@ -6,7 +6,7 @@ This directory contains a comprehensive correlation analysis system designed spe
 
 ### Core Components
 
-- **`src/correlation_analyzer.py`** - Main correlation analysis module with the `HousingCorrelationAnalyzer` class
+- **`src/analysis/correlation_analyzer.py`** - Main correlation analysis module with the `HousingCorrelationAnalyzer` class
 - **`notebooks/03_correlation_analysis.ipynb`** - Interactive Jupyter notebook for comprehensive analysis
 - **`scripts/correlation_analysis_runner.py`** - Command-line script for quick analysis
 - **`config/correlation_analysis_config.yaml`** - Configuration file for analysis settings
@@ -80,7 +80,7 @@ python scripts/correlation_analysis_runner.py \
 ### 3. Programmatic Usage
 
 ```python
-from src.correlation_analyzer import HousingCorrelationAnalyzer
+from src.analysis.correlation_analyzer import HousingCorrelationAnalyzer
 import pandas as pd
 
 # Load your data

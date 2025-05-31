@@ -23,7 +23,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root / 'src'))
 
-from correlation_analyzer import HousingCorrelationAnalyzer
+from analysis.correlation_analyzer import HousingCorrelationAnalyzer
 
 def main():
     parser = argparse.ArgumentParser(description='Run correlation analysis on housing data')
