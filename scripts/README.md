@@ -2,5 +2,7 @@
 
 Place Python scripts for data processing, feature engineering, and modeling here.
 
-- Example: `download_data.py` for automated data downloads.
-- Document script usage with comments or docstrings.
+- `download_data.py` - download the Kaggle dataset (requires Kaggle API)
+- `preprocess_data.py` - run the basic data cleaning steps from the notebooks
+
+All scripts provide `--help` output describing their options.
