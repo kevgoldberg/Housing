@@ -75,6 +75,10 @@ python scripts/correlation_analysis_runner.py \
 python scripts/correlation_analysis_runner.py \
     --data data/processed/V1/train_cleaned.csv \
     --quick
+
+# Using a configuration file
+python scripts/correlation_analysis_runner.py \
+    --config config/correlation_analysis_config.yaml
 ```
 
 ### 3. Programmatic Usage
